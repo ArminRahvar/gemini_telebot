@@ -48,7 +48,7 @@ export PYTHONPATH=${PWD}
 python src/run.py
 
 ```
----
+```bash
 ## 📁 Project Structure
 
 gemini_telebot/
@@ -61,4 +61,4 @@ gemini_telebot/
 │   └── utils/
 │       ├── text_handler.py   # PDF text extraction, chunking, embedding, FAISS
 
----
+```
