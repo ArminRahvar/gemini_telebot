@@ -14,7 +14,7 @@ A powerful PDF and voice assistant chatbot built with Python, Gemini AI, and FAI
 - 🔊 **Voice Support** — Send voice messages and receive intelligent replies.
 - 🧠 **Gemini AI Integration** — Powered by Google's Gemini API for accurate answers.
 - 📚 **FAISS Embedding Indexing** — Efficient question answering using vector similarity.
-- 🧩 **Modular Codebase** — Cleanly separated logic for easy maintenance and scalability.
+- 🧩 **Modular Codebase** — Cleanly separated logic for easy maintenance and scalability.   
 
 ---
 <!-- 
@@ -28,6 +28,7 @@ A powerful PDF and voice assistant chatbot built with Python, Gemini AI, and FAI
 
 --- -->
 
+---
 ## 🛠 How to Run
 
 1. **Set your Telegram bot token as an environment variable**:
@@ -47,6 +48,7 @@ export PYTHONPATH=${PWD}
 python src/run.py
 
 ```
+---
 ## 📁 Project Structure
 
 gemini_telebot/
@@ -59,3 +61,4 @@ gemini_telebot/
 │   └── utils/
 │       ├── text_handler.py   # PDF text extraction, chunking, embedding, FAISS
 
+---
