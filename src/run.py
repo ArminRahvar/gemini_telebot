@@ -29,7 +29,6 @@ class Bot:
             reply_markup=keyboards.main)
             self.bot.send_message(message.chat.id, "Just type a message and I'll reply.",
                             reply_markup=keyboards.main_inline)
-            print(f"User {message.from_user.username} started theself 2.")
 
         @self.bot.message_handler(content_types=["document"])
         def handle_pdf(message):
@@ -72,12 +71,14 @@ class Bot:
                 context = "\n\n".join(relevant_chunks)
 
                 answer = ask_gemini(question, context)
-                self.bot.send_message(message.chat.id, answer)
+                self.send_large_message(message.chat.id, answer)
+                # self.bot.send_message(message.chat.id, answer)
             else:
                 # No PDF context: fallback to regular chat
                 question = message.text
                 answer = ask_gemini(question)
-                self.bot.send_message(message.chat.id, answer)
+                self.send_large_message(message.chat.id, answer)
+                # self.bot.send_message(message.chat.id, answer)
 
         @self.bot.message_handler(content_types=["voice"])
         def handle_voice_message(message):
@@ -93,15 +94,14 @@ class Bot:
                     f.write(downloaded)
 
                 # Process the voice message
-                transcript = states.transcript
-                print(states.voice_prompt)
                 if states.voice_prompt:
                     self.bot.send_message(message.chat.id, "Please enter your prompt:")
                     self.bot.register_next_step_handler(message, self.save_prompt)
                 else:
                     voice_prompt = False
-                answer = voice_gemini(file_path, transcript, states.voice_prompt)
-                self.bot.reply_to(message, answer)
+                answer = voice_gemini(voice=file_path, transcript=states.transcript, voice_prompt=states.voice_prompt)
+                self.send_large_message(message.chat.id, answer)
+                # self.bot.reply_to(message, answer)
 
 
 
@@ -139,9 +139,15 @@ class Bot:
                                             )
                 self.bot.send_message(call.message.chat.id, "Cancelled.")
 
-        def save_prompt(self, message):
-            states.voice_prompt = message.text
-            self.bot.reply_to(message, "Prompt saved.")
+    def save_prompt(self, message):
+        states.voice_prompt = message.text
+        self.bot.answer_callback_query(message.id, "Prompt saved.")
+
+    def send_large_message(self, chat_id, text):
+        MAX_MESSAGE_LENGTH = 4096
+        for i in range(0, len(text), MAX_MESSAGE_LENGTH):
+            self.bot.send_message(chat_id, text[i:i+MAX_MESSAGE_LENGTH])
+
 # --- RUN ---
 if __name__ == "__main__":
     print("Bot is running...")
