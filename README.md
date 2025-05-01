@@ -48,9 +48,9 @@ export PYTHONPATH=${PWD}
 python src/run.py
 
 ```
-```bash
-## 📁 Project Structure
 
+## 📁 Project Structure
+```bash
 gemini_telebot/
 ├── files/                     # Uploaded PDFs and voice files
 ├── src/
