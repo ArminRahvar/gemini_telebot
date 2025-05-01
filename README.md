@@ -56,9 +56,20 @@ gemini_telebot/
 ├── src/
 │   ├── bot.py                 # Main telebot instance
 │   ├── run.py                # Entry point
-│   ├── constant/             # Static values like buttons, states
+│   ├── constant.py            # Static values like buttons, states
 │   ├── gemini_chat.py        # ask_gemini & voice_gemini integrations
+│   ├── requirements.txt  
 │   └── utils/
 │       ├── text_handler.py   # PDF text extraction, chunking, embedding, FAISS
+│       ├── keyboard.py   # PDF text extraction, chunking, embedding, FAISS
 
 ```
+
+## 🧠 Tech Stack
+
+- **Python 3.10+**
+- **python-telegram-bot**
+- **Sentence Transformers**
+- **FAISS**
+- **Gemini API (via google.generativeai)**
+- **FFmpeg (for voice decoding)**
