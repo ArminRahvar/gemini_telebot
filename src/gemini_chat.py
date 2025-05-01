@@ -12,7 +12,7 @@ def ask_gemini(question, context=None):
     try:
         response = client.models.generate_content(
         model="gemini-2.0-flash",
-        contents=prompt,
+        contents=[{"text": prompt}],
 )
         return response.text
     except Exception as e:
@@ -20,6 +20,7 @@ def ask_gemini(question, context=None):
 
 
 def voice_gemini(voice,transcript=False, voice_prompt=None):
+    print(voice_prompt)
     print(f"User {voice} sent a voice message2.")
 
     myfile = client.files.upload(file=voice)
@@ -33,7 +34,10 @@ def voice_gemini(voice,transcript=False, voice_prompt=None):
 
         response = client.models.generate_content(
         model="gemini-2.0-flash",
-        contents=[prompt, myfile,],
+       contents=[
+                {"text": prompt},
+                myfile  # already a File object
+            ],
 )
         print(response.text)
         return response.text
