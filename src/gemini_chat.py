@@ -1,7 +1,8 @@
 from google import genai
+from llmbot.gemini_bot.gemini_telebot.src.bot_token import gemini_api_key
 
 # Configure your Gemini API key
-client = genai.Client(api_key="AIzaSyBQXGkBcOEQ_gert0ByOW1OOuavWwsI3h8")
+client = genai.Client(api_key=gemini_api_key)
 
 def ask_gemini(question, context=None):
     
@@ -20,7 +21,6 @@ def ask_gemini(question, context=None):
 
 
 def voice_gemini(voice,transcript=False, voice_prompt=None):
-    print(voice_prompt)
     print(f"User {voice} sent a voice message2.")
 
     myfile = client.files.upload(file=voice)

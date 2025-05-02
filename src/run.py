@@ -1,12 +1,12 @@
 import os
-import telebot
 import emoji
 import numpy as np
+from functools import partial
 from src.constant import keyboards, keys, states
 from sentence_transformers import SentenceTransformer
 from src.gemini_chat import ask_gemini,voice_gemini
 from src.utils.text_handler import extract_text_from_pdf,chunk_text,embed_chunks,build_faiss_index,model
-from src.bot import bot
+from src.bot_token import bot
 
 
 
@@ -96,11 +96,12 @@ class Bot:
                 # Process the voice message
                 if states.voice_prompt:
                     self.bot.send_message(message.chat.id, "Please enter your prompt:")
-                    self.bot.register_next_step_handler(message, self.save_prompt)
+                    handler = partial(self.save_prompt, file_path=file_path, transcript=states.transcript)
+                    self.bot.register_next_step_handler(message, handler)
                 else:
                     voice_prompt = False
-                answer = voice_gemini(voice=file_path, transcript=states.transcript, voice_prompt=states.voice_prompt)
-                self.send_large_message(message.chat.id, answer)
+                    answer = voice_gemini(voice=file_path, transcript=states.transcript, voice_prompt=states.voice_prompt)
+                    self.send_large_message(message.chat.id, answer)
                 # self.bot.reply_to(message, answer)
 
 
@@ -139,9 +140,10 @@ class Bot:
                                             )
                 self.bot.send_message(call.message.chat.id, "Cancelled.")
 
-    def save_prompt(self, message):
-        states.voice_prompt = message.text
-        self.bot.answer_callback_query(message.id, "Prompt saved.")
+    def save_prompt(self, message, file_path, transcript):
+        user_prompt = message.text
+        answer = voice_gemini(voice=file_path, transcript=transcript, voice_prompt=user_prompt)
+        self.send_large_message(message.chat.id, answer)
 
     def send_large_message(self, chat_id, text):
         MAX_MESSAGE_LENGTH = 4096
