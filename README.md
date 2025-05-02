@@ -31,11 +31,13 @@ A powerful PDF and voice assistant chatbot built with Python, Gemini AI, and FAI
 ---
 ## 🛠 How to Run
 
-1. **Set your Telegram bot token as an environment variable**:
+1. **Set your Telegram bot token and Gemini API key as an environment variable**:
 
 
 ```
 export BOT_TOKEN=<your_telegram_bot_token>
+
+export GEMINI_API_KEY=<your api key>
 ```
 
 2. **Add `src` to `PYTHONPATH`**:
