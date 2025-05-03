@@ -12,10 +12,12 @@ from src.bot_token import bot
 
 class Bot:
     user_data = {}  # Stores chunks & faiss index per user
+
     def __init__(self, telebot):
         self.bot = telebot
         # register handler
         self.handlers()
+        self.conversation = {}
         # run Bot
         self.bot.infinity_polling(timeout=300, long_polling_timeout=120)
 
@@ -74,9 +76,13 @@ class Bot:
                 self.send_large_message(message.chat.id, answer)
                 # self.bot.send_message(message.chat.id, answer)
             else:
+                # Limit context size to 10 messages
+                self.conversations[message.chat.id] = self.conversations[message.chat.id][-10:]
+                
                 # No PDF context: fallback to regular chat
                 question = message.text
-                answer = ask_gemini(question)
+                answer = ask_gemini(question, self.conversation[message.chat.id])
+                self.save_conversation(chat_id=message.chat.id, question=question, answer=answer)
                 self.send_large_message(message.chat.id, answer)
                 # self.bot.send_message(message.chat.id, answer)
 
@@ -150,6 +156,19 @@ class Bot:
         for i in range(0, len(text), MAX_MESSAGE_LENGTH):
             self.bot.send_message(chat_id, text[i:i+MAX_MESSAGE_LENGTH])
 
+    def save_conversation(self, chat_id, question, answer):
+        if chat_id not in self.conversation:
+            self.conversation[chat_id] = []
+
+        self.conversations[chat_id].extend({
+            "role": "user",
+            "parts": [{"text": question}]
+        },
+        { 
+            "role": "model",
+            "parts": [{"text": answer}]
+        })
+        print(self.conversation)
 # --- RUN ---
 if __name__ == "__main__":
     print("Bot is running...")

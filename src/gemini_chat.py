@@ -4,12 +4,14 @@ from llmbot.gemini_bot.gemini_telebot.src.bot_token import gemini_api_key
 # Configure your Gemini API key
 client = genai.Client(api_key=gemini_api_key)
 
-def ask_gemini(question, context=None):
+def ask_gemini(question,conversation, context=None,):
+    conversation_raw_text = [data["parts"][0]["text"] for data in conversation ]
+    conversation_raw_text = ' '.join(conversation_raw_text)
     
     if context:
         prompt = f"Use the following context to answer the question.\n\nContext:\n{context}\n\nQuestion: {question}"
     else:
-        prompt = question
+        prompt = f"answer this question based on the conversation.\n\nConversation:\n{conversation_raw_text}\n\nQuestion: {question}"
     try:
         response = client.models.generate_content(
         model="gemini-2.0-flash",
